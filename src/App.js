@@ -5,8 +5,22 @@ import Items from './Items';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 
+const getLocalStorege = () => {
+  let list = localStorage.getItem('list');
+  if (list) {
+    list = JSON.parse(localStorage.getItem('list'));
+  } else {
+    list = [];
+  }
+  return list;
+};
+
+const setLocalStorage = (items) => {
+  localStorage.setItem('list', JSON.stringify(items));
+};
+
 function App() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(getLocalStorege());
 
   const addItem = (itemName) => {
     const newItem = {
@@ -14,12 +28,15 @@ function App() {
       completed: false,
       id: nanoid(),
     };
-    setItems([...items, newItem]);
+    const newItems = [...items, newItem];
+    setItems(newItems);
+    setLocalStorage(newItems);
   };
 
   const removeItem = (itemId) => {
     const newItems = items.filter((item) => item.id !== itemId);
     setItems(newItems);
+    setLocalStorage(newItems);
   };
 
   return (
